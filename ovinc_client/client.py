@@ -34,7 +34,7 @@ class OVINCClient:
         """
 
         # init kwargs
-        kwargs = {"headers": self._build_headers(), "verify": strtobool(os.getenv("OVINC_API_VERIFY", "True"))}
+        kwargs = {"headers": self._build_headers(), "verify": bool(strtobool(os.getenv("OVINC_API_VERIFY", "True")))}
         if method == RequestMethodEnum.GET.value:
             kwargs["params"] = params
         else:
