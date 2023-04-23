@@ -14,7 +14,7 @@ setup(
     description="A Tool for OVINC Union API",
     packages=["ovinc_client", "ovinc_client.components"],
     install_requires=[
-        "requests～=2.27.1",
+        "requests>=2.27.1",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
