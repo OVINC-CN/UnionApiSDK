@@ -14,7 +14,7 @@ from ovinc_client.constants import (
     RequestMethodEnum,
     ResponseData,
 )
-from ovinc_client.logger import logger
+from ovinc_client.core.logger import logger
 
 
 class OVINCClient:
