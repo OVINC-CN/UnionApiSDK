@@ -21,7 +21,7 @@ setup(
         "ovinc_client.trace",
     ],
     install_requires=[
-        "django==4.2.3",
+        "django>=4,<5",
         "django_environ==0.10.0",
         "djangorestframework==3.14.0",
         "mysqlclient==2.1.1",
