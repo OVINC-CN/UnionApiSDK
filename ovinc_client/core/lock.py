@@ -119,7 +119,12 @@ class TaskLock:
         cache.delete(self.cache_key)
 
 
-def task_lock(func: callable = None, lock_key: LockKey.__class__ = LockKey, retry: bool = False):
+def task_lock(
+    func: callable = None,
+    lock_key: LockKey.__class__ = LockKey,
+    retry: bool = False,
+    retry_sleep: float = TASK_RETRY_DEFAULT_SLEEP_TIME,
+):
     """
     wait task finished
     """
@@ -128,7 +133,7 @@ def task_lock(func: callable = None, lock_key: LockKey.__class__ = LockKey, retr
     def wrapper(task: callable):
         @wraps(task)
         def warp_func(*args, **kwargs):
-            TaskLock(task, lock_key, retry, *args, **kwargs)()
+            TaskLock(task, lock_key, retry, retry_sleep, *args, **kwargs)()
 
         return warp_func
 
