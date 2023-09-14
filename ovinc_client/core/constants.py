@@ -18,6 +18,9 @@ MAX_PAGE_SIZE = 100
 # Cache
 DEFAULT_CACHE_TIMEOUT = 60
 
+# SLEEP
+TASK_RETRY_DEFAULT_SLEEP_TIME = 60
+
 
 # Request
 class ViewActionChoices(TextChoices):
