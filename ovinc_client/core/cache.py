@@ -33,18 +33,15 @@ class CacheItem:
         cache key
         """
 
-        return "{}:{}:{}".format(
-            self.name,
-            self.username,
-            get_md5(
-                [
-                    get_md5(self.request.query_params),
-                    get_md5(self.request.data),
-                    get_md5(self.args),
-                    get_md5(self.kwargs),
-                ]
-            ),
+        _md5_value = get_md5(
+            [
+                get_md5(self.request.query_params),
+                get_md5(self.request.data),
+                get_md5(self.args),
+                get_md5(self.kwargs),
+            ]
         )
+        return f"{self.name}:{self.username}:{_md5_value}"
 
     def set_cache(self, data: Union[list, dict]) -> None:
         """
@@ -83,7 +80,7 @@ class CacheMixin:
             request=request,
             user_bind=self.cache_user_bind,
             *args,
-            **kwargs
+            **kwargs,
         )
 
     def get_cache(self, request: Request, *args, **kwargs) -> (bool, Union[list, dict]):

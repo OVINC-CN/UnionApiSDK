@@ -102,7 +102,7 @@ class DumpLog:
 
     @property
     def args(self) -> tuple:
-        new_args = list()
+        new_args = []
         for _arg in self._args:
             try:
                 if isinstance(_arg, bytes):
@@ -113,7 +113,7 @@ class DumpLog:
                     new_args.append(str(_arg))
                 else:
                     new_args.append(json.dumps(_arg, ensure_ascii=False))
-            except Exception:
+            except Exception:  # pylint: disable=W0718
                 new_args.append(force_str(_arg))
         return tuple(new_args)
 

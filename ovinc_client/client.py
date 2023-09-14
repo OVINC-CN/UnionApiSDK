@@ -1,20 +1,23 @@
 import json
 import os
-from distutils.util import strtobool
+from json import JSONDecodeError
 
 import requests
 from requests import HTTPError, Response
 
 from ovinc_client.components import Notice
+from ovinc_client.components.auth import Auth
 from ovinc_client.constants import (
     APP_AUTH_HEADER_KEY,
     APP_AUTH_ID_KEY,
     APP_AUTH_SECRET_KEY,
     OVINC_CLIENT_SIGNATURE,
+    OVINC_CLIENT_TIMEOUT,
     RequestMethodEnum,
     ResponseData,
 )
 from ovinc_client.core.logger import logger
+from ovinc_client.core.utils import strtobool
 
 
 class OVINCClient:
@@ -27,8 +30,9 @@ class OVINCClient:
         self._app_secret = app_secret
         self._union_api_url = union_api_url
         self.notice = Notice(self, self._union_api_url)
+        self.auth = Auth(self, self._union_api_url)
 
-    def call_api(self, method: str, url: str, params: dict) -> ResponseData:
+    def call_api(self, method: str, url: str, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT) -> ResponseData:
         """
         call union api
         """
@@ -41,7 +45,7 @@ class OVINCClient:
             kwargs["json"] = params
 
         # request
-        response = requests.request(method=method, url=url, **kwargs)
+        response = requests.request(method=method, url=url, timeout=timeout, **kwargs)
 
         # parse response
         return self._parse_response(response)
@@ -75,7 +79,7 @@ class OVINCClient:
 
         try:
             data = response.json()
-        except Exception as err:
+        except (TypeError, ValueError, JSONDecodeError) as err:
             logger.error("[ResponseParseFailed] %s", err)
             return ResponseData(result=False)
 

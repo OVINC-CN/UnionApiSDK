@@ -17,12 +17,6 @@ MAX_PAGE_SIZE = 100
 
 # Cache
 DEFAULT_CACHE_TIMEOUT = 60
-DEFAULT_USER_CACHE_TIMEOUT = 60 * 10
-
-# OVINC
-OVINC_APP_HEADER = "ovinc-app"
-OVINC_TOKEN = "code"
-OVINC_AUTH_URL = "/account/verify_code/"
 
 
 # Request

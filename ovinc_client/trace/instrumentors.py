@@ -59,7 +59,7 @@ def django_response_hook(span: Span, request: WSGIRequest, response: HttpRespons
         result = json.loads(response.content)
         if not isinstance(result, dict):
             return
-    except Exception:
+    except Exception:  # pylint: disable=W0718
         return
 
     # Set Attributes
@@ -91,7 +91,7 @@ class DBApiIntegration(DatabaseApiIntegration):
                     self.span_attributes[SpanAttributes.DB_PORT] = conn["PORT"]
                     self.span_attributes[SpanAttributes.DB_IP] = conn["HOST"]
                     break
-        except Exception:
+        except Exception:  # pylint: disable=W0718
             logger.error(traceback.format_exc())
 
 
@@ -129,5 +129,7 @@ class Instrumentor(BaseInstrumentor):
         trace_integration(MySQLdb, "connect", "mysql", db_api_integration_factory=DBApiIntegration)
 
     def _uninstrument(self, **kwargs):
-        for instrumentor in self.instrumentors:
+        if getattr(self, "instrumentors", None) is None:
+            return
+        for instrumentor in self.instrumentors:  # pylint: disable=E1101
             instrumentor.uninstrument()

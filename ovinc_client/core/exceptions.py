@@ -34,7 +34,7 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
         if getattr(exc, "auth_header", None):
             headers["WWW-Authenticate"] = exc.auth_header
         if getattr(exc, "wait", None):
-            headers["Retry-After"] = "%d" % exc.wait
+            headers["Retry-After"] = f"{exc.wait}"
 
         if isinstance(exc, ValidationError):
             if isinstance(exc.detail, dict):
@@ -48,7 +48,7 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
                         msg_val = "".join(val)
                     except TypeError:
                         msg_val = str(val)
-                    msg += "[{}]{}".format(get_field_name(err.serializer, field), msg_val)
+                    msg += f"[{get_field_name(err.serializer, field)}]{msg_val}"
         elif isinstance(exc.detail, (list, dict)):
             data = exc.detail
             msg = gettext("Request Failed")
@@ -56,7 +56,7 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
             data = None
             msg = exc.detail
 
-        from rest_framework.views import set_rollback
+        from rest_framework.views import set_rollback  # pylint: disable=C0415
 
         set_rollback()
 

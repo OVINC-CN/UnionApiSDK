@@ -63,7 +63,7 @@ class ServiceNameHandler:
 
         # when has suffix, then return value with suffix
         if self.suffix:
-            return "{}-{}".format(self._service_name, self.suffix)
+            return f"{self._service_name}-{self.suffix}"
         # return default service name
         return self._service_name
 

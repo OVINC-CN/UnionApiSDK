@@ -17,6 +17,7 @@ class UserManager(SoftDeletedManager, _UserManager):
     User Manager
     """
 
+    # pylint: disable=W0237
     def create_user(self, username, nick_name=None, password=None, **extra_fields):
         if not username:
             raise ValueError(gettext("Username Cannot be Empty"))
@@ -25,6 +26,7 @@ class UserManager(SoftDeletedManager, _UserManager):
         user.save(using=self._db)
         return user
 
+    # pylint: disable=W0237
     def create_superuser(self, username, nick_name=None, password=None, **extra_fields):
         extra_fields["is_superuser"] = True
         self.create_user(username, nick_name, password, **extra_fields)

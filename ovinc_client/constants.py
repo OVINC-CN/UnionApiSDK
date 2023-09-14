@@ -2,6 +2,7 @@ import enum
 
 # Client
 OVINC_CLIENT_SIGNATURE = "OVINC Client"
+OVINC_CLIENT_TIMEOUT = 60
 
 # App Auth
 APP_AUTH_HEADER_KEY = "ovinc-app"
@@ -22,4 +23,4 @@ class ResponseData:
 
     @property
     def data(self) -> dict:
-        return self._data if self._result else dict()
+        return self._data if self._result else {}

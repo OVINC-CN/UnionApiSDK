@@ -3,13 +3,14 @@ class PostFork:
     Mock for uwsgi postfork
     """
 
-    def __init__(self, f):
-        if callable(f):
-            self.f = f
+    def __init__(self, func):
+        if callable(func):
+            self.func = func
         else:
-            self.f = None
+            self.func = None
 
+    # pylint: disable=R1710
     def __call__(self, *args, **kwargs):
-        if self.f:
-            return self.f()
-        self.f = args[0]
+        if self.func:
+            return self.func()
+        self.func = args[0]
