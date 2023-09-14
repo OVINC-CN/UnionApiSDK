@@ -25,7 +25,6 @@ class CSRFExemptMiddleware(MiddlewareMixin):
 
     def process_request(self, request) -> None:
         setattr(request, "_dont_enforce_csrf_checks", True)
-        return None
 
 
 class SQLDebugMiddleware(MiddlewareMixin):
@@ -46,14 +45,14 @@ class SQLDebugMiddleware(MiddlewareMixin):
             try:
                 cursor.execute(f"explain {sql_str}")
                 explain_data = cursor.fetchall()
-            except Exception:
+            except Exception:  # pylint: disable=W0718
                 explain_data = []
             # [2] is table，skip table
             if not explain_data or explain_data[0][2] is None:
                 continue
-            msg = "[{}] {}".format(sql_time, sql_str)
+            msg = f"[{sql_time}] {sql_str}"
             for i in explain_data:
-                msg += "\n \t [{}][{}] {}".format(i[4], i[6], i)
+                msg += f"\n \t [{i[4]}][{i[6]}] {i}"
             mysql_logger.info(msg)
         return response
 

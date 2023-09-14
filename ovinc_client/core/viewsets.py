@@ -17,11 +17,11 @@ class MainViewSet(CacheMixin, GenericViewSet):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
+        self.args = args  # pylint: disable=W0201
+        self.kwargs = kwargs  # pylint: disable=W0201
         request = self.initialize_request(request, *args, **kwargs)
-        self.request = request
-        self.headers = self.default_response_headers
+        self.request = request  # pylint: disable=W0201
+        self.headers = self.default_response_headers  # pylint: disable=W0201
 
         try:
             self.initial(request, *args, **kwargs)
@@ -45,10 +45,10 @@ class MainViewSet(CacheMixin, GenericViewSet):
             else:
                 response = handler(request, *args, **kwargs)
 
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=W0718
             response = self.handle_exception(exc)
 
-        self.response = self.finalize_response(request, response, *args, **kwargs)
+        self.response = self.finalize_response(request, response, *args, **kwargs)  # pylint: disable=W0201
 
         # Record Request
         try:
@@ -72,7 +72,7 @@ class MainViewSet(CacheMixin, GenericViewSet):
                 },
             )
 
-        except Exception:
+        except Exception:  # pylint: disable=W0718
             logger.error(traceback.format_exc())
 
         return self.response
@@ -84,6 +84,7 @@ class MainViewSet(CacheMixin, GenericViewSet):
         """
 
         # request
+        # pylint: disable=W0212
         _request = RequestMock(user=request.user, params=params or {}, request=request._request)
 
         # init

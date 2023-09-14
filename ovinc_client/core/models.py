@@ -1,4 +1,5 @@
-from django.core.cache import cache
+from types import DynamicClassAttribute
+
 from django.db import models
 from django.db.models import CharField
 from django.db.models import ForeignKey as _ForeignKey
@@ -21,7 +22,7 @@ class IntegerChoices(_IntegerChoices):
     Int Choices
     """
 
-    @property
+    @DynamicClassAttribute
     def value(self) -> int:
         """
         Get choice value
@@ -35,7 +36,7 @@ class TextChoices(_TextChoices):
     Text Choices
     """
 
-    @property
+    @DynamicClassAttribute
     def value(self) -> str:
         """
         Get choice value
@@ -46,6 +47,7 @@ class TextChoices(_TextChoices):
 
 class UniqIDField(CharField):
     def __init__(self, verbose_name, **kwargs):
+        # pylint: disable=R0401,C0415
         from ovinc_client.core.constants import SHORT_CHAR_LENGTH
 
         kwargs.update({"primary_key": True, "max_length": SHORT_CHAR_LENGTH, "default": uniq_id_without_time})
@@ -57,6 +59,7 @@ class ForeignKey(_ForeignKey):
     ForeignKey
     """
 
+    # pylint: disable=R0913
     def __init__(
         self,
         verbose_name: str,
@@ -83,6 +86,7 @@ class ManyToManyField(_ManyToManyField):
     ManyToManyField
     """
 
+    # pylint: disable=R0913
     def __init__(
         self,
         verbose_name: str,
@@ -107,10 +111,7 @@ class BaseModel(models.Model):
     Base Model
     """
 
-    from ovinc_client.core.constants import DEFAULT_USER_CACHE_TIMEOUT
-
     objects = models.Manager()
-    cache_timeout = DEFAULT_USER_CACHE_TIMEOUT
 
     class Meta:
         abstract = True
@@ -122,23 +123,8 @@ class BaseModel(models.Model):
     def get_queryset(cls) -> QuerySet:
         return cls.objects.all()
 
-    def save(self, *args, **kwargs) -> None:
-        self.remove_cache()
-        return super().save()
-
-    def delete(self, *args, **kwargs) -> None:
-        self.remove_cache()
-        return super().delete(*args, **kwargs)
-
     def get_name(self) -> str:
         return str(self)
-
-    @classmethod
-    def cache_key(cls, pk: str) -> str:
-        return f"model-cache:{cls.__name__}:{pk}"
-
-    def remove_cache(self) -> None:
-        cache.delete(self.cache_key(self.pk))
 
 
 class SoftDeletedManager(models.Manager):
@@ -179,7 +165,6 @@ class SoftDeletedModel(BaseModel):
         return cls.objects.filter(is_deleted=False)
 
     def delete(self, *args, **kwargs) -> None:
-        self.remove_cache()
         self.is_deleted = True
         self.save()
 

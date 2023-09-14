@@ -5,6 +5,7 @@ from django.utils.translation import gettext, gettext_lazy
 from rest_framework import exceptions, status
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.serializers import Serializer
+from rest_framework.views import set_rollback
 
 from ovinc_client.trace.constants import SPAN_ERROR_TYPE, SpanAttributes
 from ovinc_client.trace.utils import start_as_current_span
@@ -34,7 +35,7 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
         if getattr(exc, "auth_header", None):
             headers["WWW-Authenticate"] = exc.auth_header
         if getattr(exc, "wait", None):
-            headers["Retry-After"] = "%d" % exc.wait
+            headers["Retry-After"] = f"{exc.wait}"
 
         if isinstance(exc, ValidationError):
             if isinstance(exc.detail, dict):
@@ -48,15 +49,13 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
                         msg_val = "".join(val)
                     except TypeError:
                         msg_val = str(val)
-                    msg += "[{}]{}".format(get_field_name(err.serializer, field), msg_val)
+                    msg += f"[{get_field_name(err.serializer, field)}]{msg_val}"
         elif isinstance(exc.detail, (list, dict)):
             data = exc.detail
             msg = gettext("Request Failed")
         else:
             data = None
             msg = exc.detail
-
-        from rest_framework.views import set_rollback
 
         set_rollback()
 

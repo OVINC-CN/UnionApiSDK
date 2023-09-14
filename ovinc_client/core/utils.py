@@ -3,7 +3,6 @@ import os
 import random
 import time
 import uuid
-from distutils.util import strtobool as _strtobool
 from hashlib import md5
 from itertools import chain
 
@@ -15,9 +14,9 @@ def uniq_id(with_time=True) -> str:
     Create Uniq ID
     """
 
-    m = md5()
-    m.update(str(int(time.time() * 1000)).encode())
-    time_str = str(m.hexdigest())
+    _md5 = md5()
+    _md5.update(str(int(time.time() * 1000)).encode())
+    time_str = str(_md5.hexdigest())
     uniq = str(uuid.uuid3(uuid.uuid1(), uuid.uuid4().hex).hex)
     return f"{time_str if with_time else ''}{uniq}"
 
@@ -80,10 +79,9 @@ def field_handler(data) -> any:
 
     if isinstance(data, datetime.datetime):
         return data.strftime("%Y-%m-%d %H:%M:%S")
-    elif isinstance(data, datetime.date):
+    if isinstance(data, datetime.date):
         return data.strftime("%Y-%m-%d")
-    else:
-        return data
+    return data
 
 
 def model_to_dict(instance, fields=None, exclude=None) -> dict:
@@ -91,14 +89,14 @@ def model_to_dict(instance, fields=None, exclude=None) -> dict:
     Trans Model Data to Json
     """
 
-    opts = instance._meta
+    opts = instance._meta  # pylint: disable=W0212
     data = {}
-    for f in chain(opts.concrete_fields, opts.private_fields, opts.many_to_many):
-        if fields is not None and f.name not in fields:
+    for _field in chain(opts.concrete_fields, opts.private_fields, opts.many_to_many):
+        if fields is not None and _field.name not in fields:
             continue
-        if exclude and f.name in exclude:
+        if exclude and _field.name in exclude:
             continue
-        data[f.name] = field_handler(f.value_from_object(instance))
+        data[_field.name] = field_handler(_field.value_from_object(instance))
     return data
 
 
@@ -109,7 +107,7 @@ def getenv_or_raise(key: str) -> str:
 
     val = os.getenv(key)
     if val is None:
-        raise Exception(f"Env Not Set, Key [{key}]")
+        raise ValueError(f"Env Not Set, Key [{key}]")
     return val
 
 
@@ -118,7 +116,12 @@ def strtobool(val):
     Trans Str to Bool
     """
 
-    return bool(_strtobool(str(val)))
+    val = val.lower()
+    if val in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    if val in ("n", "no", "f", "false", "off", "0"):
+        return False
+    raise ValueError(f"invalid truth value {val}")
 
 
 def get_md5(content):
@@ -128,13 +131,14 @@ def get_md5(content):
 
     if isinstance(content, dict):
         return get_md5([(str(k), get_md5(content[k])) for k in sorted(content.keys())])
-    elif isinstance(content, (list, tuple)):
+
+    if isinstance(content, (list, tuple)):
         content = sorted(get_md5(k) for k in content)
 
     content = str(content)
-    m = md5()
+    _md5 = md5()
     if isinstance(content, str):
-        m.update(content.encode("utf8"))
+        _md5.update(content.encode("utf8"))
     else:
-        m.update(content)
-    return m.hexdigest()
+        _md5.update(content)
+    return _md5.hexdigest()

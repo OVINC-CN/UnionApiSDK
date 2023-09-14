@@ -15,7 +15,7 @@ from ovinc_client.trace.utils import ServiceNameHandler, inject_logging_trace_in
 try:
     from uwsgidecorators import postfork
 except ImportError:
-    from ovinc_client.core.mock import PostFork as postfork
+    from ovinc_client.core.mock import PostFork as postfork  # pylint: disable=C0412
 
 
 class TraceHandler:
