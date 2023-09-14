@@ -5,7 +5,6 @@ from django.utils.translation import gettext, gettext_lazy
 from rest_framework import exceptions, status
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.serializers import Serializer
-from rest_framework.views import set_rollback
 
 from ovinc_client.trace.constants import SPAN_ERROR_TYPE, SpanAttributes
 from ovinc_client.trace.utils import start_as_current_span
@@ -56,6 +55,8 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
         else:
             data = None
             msg = exc.detail
+
+        from rest_framework.views import set_rollback  # pylint: disable=C0415
 
         set_rollback()
 

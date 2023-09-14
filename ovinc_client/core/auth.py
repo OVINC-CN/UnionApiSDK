@@ -55,7 +55,7 @@ class OAuthBackend(BaseBackend):
             resp: ResponseData = client.auth.verify_code({"code": code})
             data: dict = resp.data.get("data", {})
             if data and data.get("username"):
-                username = data["username"]
+                username = data.pop("username")
                 user = USER_MODEL.objects.get_or_create(username=username)[0]
                 for key, val in data.items():
                     setattr(user, key, val)
