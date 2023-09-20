@@ -1,4 +1,5 @@
 import traceback
+from typing import Union
 
 from rest_framework import mixins
 from rest_framework.request import Request
@@ -64,7 +65,7 @@ class MainViewSet(CacheMixin, GenericViewSet):
                 request.method,
                 request.path,
                 {"params": request.query_params, "body": request.data},
-                self.response.data if hasattr(self.response, "data") else self.response.content,
+                self.get_response_content(),
                 {
                     "user_agent": request.META.get("HTTP_USER_AGENT", ""),
                     "ip": get_ip(request),
@@ -76,6 +77,17 @@ class MainViewSet(CacheMixin, GenericViewSet):
             logger.error(traceback.format_exc())
 
         return self.response
+
+    def get_response_content(self) -> Union[str, dict, bytes]:
+        if hasattr(self.response, "data"):
+            return self.response.data
+        if hasattr(self.response, "content"):
+            return self.response.content
+        if hasattr(self.response, "streaming_content"):
+            return self.response.streaming_content
+        msg = f"[RequestLogResponseContentNotSet] {self.response}"
+        logger.warning(msg)
+        return f"<{msg}>"
 
     @classmethod
     def call_action(cls, action: str, request: Request, params: dict = None, *args, **kwargs) -> Response:
