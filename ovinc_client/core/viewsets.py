@@ -1,6 +1,7 @@
 import traceback
 from typing import Union
 
+from django.conf import settings
 from rest_framework import mixins
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -50,6 +51,10 @@ class MainViewSet(CacheMixin, GenericViewSet):
             response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)  # pylint: disable=W0201
+
+        # Record Disabled
+        if not getattr(settings, "OVINC_API_RECORD_LOG", True):
+            return self.response
 
         # Record Request
         try:
