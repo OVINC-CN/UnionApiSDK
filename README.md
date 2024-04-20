@@ -11,3 +11,7 @@ Available: `verify_code`
 ### Notice
 
 Available: `mail` `sms` `robot`
+
+### TCaptcha
+
+Available: `tcaptcha`

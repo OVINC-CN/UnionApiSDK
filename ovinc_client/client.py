@@ -5,8 +5,9 @@ from json import JSONDecodeError
 import requests
 from requests import HTTPError, Response
 
-from ovinc_client.components import Notice
 from ovinc_client.components.auth import Auth
+from ovinc_client.components.notice import Notice
+from ovinc_client.components.tcaptcha import TCaptcha
 from ovinc_client.constants import (
     APP_AUTH_HEADER_KEY,
     APP_AUTH_ID_KEY,
@@ -31,6 +32,7 @@ class OVINCClient:
         self._union_api_url = union_api_url
         self.notice = Notice(self, self._union_api_url)
         self.auth = Auth(self, self._union_api_url)
+        self.tcaptcha = TCaptcha(self, self._union_api_url)
 
     def call_api(self, method: str, url: str, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT) -> ResponseData:
         """
