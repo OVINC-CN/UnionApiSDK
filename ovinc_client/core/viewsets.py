@@ -18,6 +18,8 @@ class MainViewSet(CacheMixin, GenericViewSet):
     Base ViewSet
     """
 
+    enable_record_log = True
+
     def dispatch(self, request, *args, **kwargs):
         self.args = args  # pylint: disable=W0201
         self.kwargs = kwargs  # pylint: disable=W0201
@@ -53,7 +55,7 @@ class MainViewSet(CacheMixin, GenericViewSet):
         self.response = self.finalize_response(request, response, *args, **kwargs)  # pylint: disable=W0201
 
         # Record Disabled
-        if not getattr(settings, "OVINC_API_RECORD_LOG", True):
+        if not getattr(settings, "OVINC_API_RECORD_LOG", True) or not self.check_record_log(request, *args, **kwargs):
             return self.response
 
         # Record Request
@@ -82,6 +84,9 @@ class MainViewSet(CacheMixin, GenericViewSet):
             logger.error(traceback.format_exc())
 
         return self.response
+
+    def check_record_log(self, request: Request, *args, **kwargs) -> bool:
+        return self.enable_record_log
 
     def get_response_content(self) -> Union[str, dict, bytes]:
         if hasattr(self.response, "data"):
