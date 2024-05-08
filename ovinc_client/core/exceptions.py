@@ -86,7 +86,7 @@ def django_exception_handler(handler, request) -> JsonResponse:
         {
             "data": None,
             "message": handler.default_detail,
-            "trace": getattr(request, "otel_trace_id", ""),
+            "trace": getattr(request, "otel_trace_id", None),
         },
         status=handler.status_code,
         json_dumps_params={"ensure_ascii": False},

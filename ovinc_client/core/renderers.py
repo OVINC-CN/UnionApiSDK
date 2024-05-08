@@ -20,7 +20,7 @@ class APIRenderer(BaseRenderer):
         response = {
             "message": "success",
             "data": None,
-            "trace": getattr(request, "otel_trace_id"),
+            "trace": getattr(request, "otel_trace_id", None),
         }
         if isinstance(data, dict):
             if "message" in data:
