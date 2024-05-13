@@ -2,8 +2,8 @@ import json
 import os
 from json import JSONDecodeError
 
-import requests
-from requests import HTTPError, Response
+import httpx
+from httpx import HTTPStatusError, Response
 
 from ovinc_client.components.auth import Auth
 from ovinc_client.components.notice import Notice
@@ -39,15 +39,16 @@ class OVINCClient:
         call union api
         """
 
-        # init kwargs
-        kwargs = {"headers": self._build_headers(), "verify": bool(strtobool(os.getenv("OVINC_API_VERIFY", "True")))}
-        if method == RequestMethodEnum.GET.value:
-            kwargs["params"] = params
-        else:
-            kwargs["json"] = params
-
         # request
-        response = requests.request(method=method, url=url, timeout=timeout, **kwargs)
+        client = httpx.Client(
+            http2=True,
+            headers=self._build_headers(),
+            verify=bool(strtobool(os.getenv("OVINC_API_VERIFY", "True"))),
+        )
+        if method == RequestMethodEnum.GET:
+            response = client.request(method=method, url=url, timeout=timeout, params=params)
+        else:
+            response = client.request(method=method, url=url, timeout=timeout, json=params)
 
         # parse response
         return self._parse_response(response)
@@ -75,7 +76,7 @@ class OVINCClient:
 
         try:
             response.raise_for_status()
-        except HTTPError as err:
+        except HTTPStatusError as err:
             logger.error("[ResponseCheckFailed] %s", err)
             return ResponseData(result=False)
 

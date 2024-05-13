@@ -12,6 +12,7 @@ from opentelemetry.instrumentation.dbapi import (
     trace_integration,
 )
 from opentelemetry.instrumentation.django import DjangoInstrumentor
+from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.instrumentor import BaseInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from opentelemetry.instrumentation.redis import RedisInstrumentor
@@ -126,6 +127,7 @@ class Instrumentor(BaseInstrumentor):
         DjangoInstrumentor().instrument(request_hook=django_request_hook, response_hook=django_response_hook)
         CeleryInstrumentor().instrument()
         RedisInstrumentor().instrument(request_hook=RedisRequestHook())
+        HTTPXClientInstrumentor().instrument()
         trace_integration(MySQLdb, "connect", "mysql", db_api_integration_factory=DBApiIntegration)
 
     def _uninstrument(self, **kwargs):
