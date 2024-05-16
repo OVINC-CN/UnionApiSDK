@@ -48,6 +48,7 @@ setup(
         "opentelemetry-instrumentation-celery==0.45b0",
         "opentelemetry-instrumentation-logging==0.45b0",
         "opentelemetry-instrumentation-httpx==0.45b0",
+        "ipython>=8.10.0,<9",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
