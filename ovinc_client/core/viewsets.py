@@ -40,5 +40,5 @@ class UpdateMixin(abc.ABC):
 
 class DestroyMixin(abc.ABC):
     @abc.abstractmethod
-    def destroy(self, request, *args, **kwargs):
+    async def destroy(self, request, *args, **kwargs):
         raise NotImplementedError()
