@@ -1,3 +1,4 @@
+from channels.db import database_sync_to_async
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
@@ -19,12 +20,12 @@ class UserInfoViewSet(ListMixin, MainViewSet):
 
     queryset = USER_MODEL.objects.all()
 
-    def list(self, request, *args, **kwargs):
+    async def list(self, request, *args, **kwargs):
         """
         User Info
         """
 
-        return Response(UserInfoSerializer(request.user).data)
+        return Response(await UserInfoSerializer(request.user).adata)
 
 
 class UserSignViewSet(MainViewSet):
@@ -36,7 +37,7 @@ class UserSignViewSet(MainViewSet):
     authentication_classes = [SessionAuthenticate]
 
     @action(methods=["POST"], detail=False)
-    def sign_in(self, request, *args, **kwargs):
+    async def sign_in(self, request, *args, **kwargs):
         """
         Sign In
         """
@@ -47,18 +48,18 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # auth
-        user = OAuthBackend().authenticate(request, code=request_data["code"])
+        user = await OAuthBackend().authenticate(request, code=request_data["code"])
         if user:
-            auth.login(request, user)
+            await database_sync_to_async(auth.login)(request, user)
             return Response()
 
         raise VerifyFailed()
 
     @action(methods=["GET"], detail=False)
-    def sign_out(self, request, *args, **kwargs):
+    async def sign_out(self, request, *args, **kwargs):
         """
         Sign Out
         """
 
-        auth.logout(request)
+        await database_sync_to_async(auth.logout)(request)
         return Response()

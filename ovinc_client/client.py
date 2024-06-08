@@ -34,21 +34,23 @@ class OVINCClient:
         self.auth = Auth(self, self._union_api_url)
         self.tcaptcha = TCaptcha(self, self._union_api_url)
 
-    def call_api(self, method: str, url: str, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT) -> ResponseData:
+    async def call_api(
+        self, method: str, url: str, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT
+    ) -> ResponseData:
         """
         call union api
         """
 
         # request
-        client = httpx.Client(
+        client = httpx.AsyncClient(
             http2=True,
             headers=self._build_headers(),
             verify=bool(strtobool(os.getenv("OVINC_API_VERIFY", "True"))),
         )
         if method == RequestMethodEnum.GET:
-            response = client.request(method=method, url=url, timeout=timeout, params=params)
+            response = await client.request(method=method, url=url, timeout=timeout, params=params)
         else:
-            response = client.request(method=method, url=url, timeout=timeout, json=params)
+            response = await client.request(method=method, url=url, timeout=timeout, json=params)
 
         # parse response
         return self._parse_response(response)
