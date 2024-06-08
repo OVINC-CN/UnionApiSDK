@@ -10,8 +10,6 @@ class MainViewSet(CacheMixin, ViewSet):
     Base ViewSet
     """
 
-    view_is_async = True
-
     ...
 
 

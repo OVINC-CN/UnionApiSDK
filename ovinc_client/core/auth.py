@@ -61,7 +61,7 @@ class OAuthBackend(BaseBackend):
             data: dict = resp.data.get("data", {})
             if data and data.get("username"):
                 username = data.pop("username")
-                user = await self.get_user(username=username)
+                user = await self.get_user(user_id=username)
                 for key, val in data.items():
                     setattr(user, key, val)
                 await database_sync_to_async(user.save)(update_fields=data.keys())
@@ -73,5 +73,5 @@ class OAuthBackend(BaseBackend):
             return None
 
     @database_sync_to_async
-    def get_user(self, username: str) -> USER_MODEL:
-        return USER_MODEL.objects.get_or_create(username=username)[0]
+    def get_user(self, user_id: str) -> USER_MODEL:
+        return USER_MODEL.objects.get_or_create(username=user_id)[0]

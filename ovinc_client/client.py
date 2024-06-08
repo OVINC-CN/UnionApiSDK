@@ -34,7 +34,9 @@ class OVINCClient:
         self.auth = Auth(self, self._union_api_url)
         self.tcaptcha = TCaptcha(self, self._union_api_url)
 
-    async def call_api(self, method: str, url: str, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT) -> ResponseData:
+    async def call_api(
+        self, method: str, url: str, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT
+    ) -> ResponseData:
         """
         call union api
         """
