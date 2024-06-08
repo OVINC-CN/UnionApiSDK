@@ -1,11 +1,12 @@
 import abc
 
 from adrf.viewsets import ViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from ovinc_client.core.cache import CacheMixin
 
 
-class MainViewSet(CacheMixin, ViewSet):
+class MainViewSet(CacheMixin, ViewSet, GenericViewSet):
     """
     Base ViewSet
     """
