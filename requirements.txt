@@ -8,10 +8,15 @@ pytz>=2022.4,<2025
 django-sslserver>=0.22,<1
 pyOpenSSL>=22.1.0,<25
 django-simpleui>=2023.8.28,<2025
+adrf==0.1.6
 
 # Storage
 redis>=5.0.0,<6
 django-redis>=5.0.0,<6
+
+# Async
+channels[daphne]==4.1.0
+Twisted[http2,tls]==24.3.0
 
 # Log
 python_json_logger>=2.0.3,<3
@@ -27,6 +32,7 @@ opentelemetry-sdk==1.24.0
 opentelemetry-exporter-jaeger==1.21.0
 opentelemetry-exporter-otlp==1.24.0
 opentelemetry-instrumentation==0.45b0
+opentelemetry-instrumentation-asgi==0.45b0
 opentelemetry-instrumentation-django==0.45b0
 opentelemetry-instrumentation-dbapi==0.45b0
 opentelemetry-instrumentation-redis==0.45b0

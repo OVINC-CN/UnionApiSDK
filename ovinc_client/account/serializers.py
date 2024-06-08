@@ -1,13 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
 from rest_framework import serializers
+from adrf.serializers import Serializer, ModelSerializer
 
 from ovinc_client.account.models import User
 
 USER_MODEL: User = get_user_model()
 
 
-class UserSignInSerializer(serializers.Serializer):
+class UserSignInSerializer(Serializer):
     """
     Sign In
     """
@@ -15,7 +16,7 @@ class UserSignInSerializer(serializers.Serializer):
     code = serializers.CharField(label=gettext_lazy("Code"))
 
 
-class UserInfoSerializer(serializers.ModelSerializer):
+class UserInfoSerializer(ModelSerializer):
     """
     User Info
     """

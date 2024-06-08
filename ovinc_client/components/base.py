@@ -18,8 +18,8 @@ class Endpoint:
         self._client = client
         self.base_url = base_url
 
-    def __call__(self, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT) -> ResponseData:
-        return self._client.call_api(method=self.method, url=self.url, params=params, timeout=timeout)
+    async def __call__(self, params: dict, timeout: float = OVINC_CLIENT_TIMEOUT) -> ResponseData:
+        return await self._client.call_api(method=self.method, url=self.url, params=params, timeout=timeout)
 
     @property
     def url(self) -> str:
