@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.3.1",
+    version="0.3.2",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -35,6 +35,7 @@ setup(
         "django-redis>=5.0.0,<6",
         "python_json_logger>=2.0.3,<3",
         "httpx[http2]>=0.23.2,<1",
+        "channels==4.1.0",
         "requests>=2.28.0,<3",
         "protobuf>=3.19.5,<6",
         "opentelemetry-api==1.24.0",

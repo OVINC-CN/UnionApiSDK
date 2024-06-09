@@ -1,6 +1,6 @@
 from typing import Tuple, Union
 
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
@@ -25,7 +25,7 @@ class SessionAuthenticate(SessionAuthentication):
             return None
         return user, None
 
-    @sync_to_async
+    @database_sync_to_async
     def check_user(self, user):
         return user is None or not user.is_active
 
@@ -72,6 +72,6 @@ class OAuthBackend(BaseBackend):
             logger.exception(err)
             return None
 
-    @sync_to_async
+    @database_sync_to_async
     def get_user(self, user_id: str) -> USER_MODEL:
         return USER_MODEL.objects.get_or_create(username=user_id)[0]
