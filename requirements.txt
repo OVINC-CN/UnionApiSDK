@@ -14,10 +14,6 @@ adrf==0.1.6
 redis>=5.0.0,<6
 django-redis>=5.0.0,<6
 
-# Async
-channels[daphne]==4.1.0
-Twisted[http2,tls]==24.3.0
-
 # Log
 python_json_logger>=2.0.3,<3
 

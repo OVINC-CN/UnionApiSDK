@@ -1,6 +1,6 @@
 from typing import Tuple, Union
 
-from channels.db import database_sync_to_async
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
@@ -25,7 +25,7 @@ class SessionAuthenticate(SessionAuthentication):
             return None
         return user, None
 
-    @database_sync_to_async
+    @sync_to_async
     def check_user(self, user):
         return user is None or not user.is_active
 
@@ -64,7 +64,7 @@ class OAuthBackend(BaseBackend):
                 user = await self.get_user(user_id=username)
                 for key, val in data.items():
                     setattr(user, key, val)
-                await database_sync_to_async(user.save)(update_fields=data.keys())
+                await user.asave(update_fields=data.keys())
                 return user
             logger.info("[UnionAuthFailed] Result => %s", resp.data)
             return None
@@ -72,6 +72,6 @@ class OAuthBackend(BaseBackend):
             logger.exception(err)
             return None
 
-    @database_sync_to_async
+    @sync_to_async
     def get_user(self, user_id: str) -> USER_MODEL:
         return USER_MODEL.objects.get_or_create(username=user_id)[0]
