@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.3.4b0",
+    version="0.3.4b1",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -18,6 +18,7 @@ setup(
         "ovinc_client.account.migrations",
         "ovinc_client.components",
         "ovinc_client.core",
+        "ovinc_client.tcaptcha",
         "ovinc_client.trace",
     ],
     install_requires=[
