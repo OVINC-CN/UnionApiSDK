@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.3.4",
+    version="0.3.5",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -53,8 +53,8 @@ setup(
         "opentelemetry-instrumentation-logging==0.45b0",
         "opentelemetry-instrumentation-httpx==0.45b0",
         "ipython>=8.10.0,<9",
-        "tencentcloud-sdk-python==3.0.785",
-        "pycryptodome==3.20.0",
+        "tencentcloud-sdk-python>=3.0.785,<4",
+        "pycryptodome>=3.20.0,<4",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
