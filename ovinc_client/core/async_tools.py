@@ -17,6 +17,7 @@ class SyncRunner:
         asyncio.set_event_loop(self.loop)
         self.loop.run_forever()
 
+    # pylint: disable=C0103
     def run(self, co: Coroutine):
         try:
             future = asyncio.run_coroutine_threadsafe(co, self.loop)

@@ -25,13 +25,13 @@ class CaptchaViewSet(MainViewSet):
         """
 
         # encrypt app id
-        iv = uniq_id_without_time()[:16].encode()
-        cipher = AES.new((settings.CAPTCHA_APP_SECRET * 2)[:32].encode(), AES.MODE_CBC, iv)
+        nonce = uniq_id_without_time()[:16].encode()
+        cipher = AES.new((settings.CAPTCHA_APP_SECRET * 2)[:32].encode(), AES.MODE_CBC, nonce)
         plain_text = (
             f"{settings.CAPTCHA_APP_ID}&{int(datetime.datetime.now().timestamp())}&{settings.CAPTCHA_APP_INFO_TIMEOUT}"
         )
         cipher_text = cipher.encrypt(pad(plain_text.encode(), AES.block_size))
-        aid_encrypted = base64.b64encode(iv + cipher_text).decode()
+        aid_encrypted = base64.b64encode(nonce + cipher_text).decode()
 
         # response
         return Response(
