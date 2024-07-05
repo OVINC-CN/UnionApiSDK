@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.utils.log import configure_logging
 from opentelemetry import trace
-from opentelemetry.exporter.jaeger.thrift import JaegerExporter
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -11,16 +10,9 @@ from ovinc_client.trace.exporters import LazyBatchSpanProcessor
 from ovinc_client.trace.instrumentors import Instrumentor
 from ovinc_client.trace.utils import ServiceNameHandler, inject_logging_trace_info
 
-# Adaptor for uwsgi postfork
-try:
-    from uwsgidecorators import postfork
-except ImportError:
-    from ovinc_client.core.mock import PostFork as postfork  # pylint: disable=C0412
-
 
 class TraceHandler:
     @staticmethod
-    @postfork
     def setup():
         # use command below to start a local jaeger for trace log
         # docker run -p 16686:16686 -p 6831:6831/udp jaegertracing/all-in-one
@@ -34,13 +26,7 @@ class TraceHandler:
             )
         )
         # otlp
-        if settings.OTLP_HOST:
-            exporter = OTLPSpanExporter(endpoint=settings.OTLP_HOST)
-        # jaeger
-        else:
-            exporter = JaegerExporter(
-                agent_host_name=settings.JAEGER_HOST, agent_port=settings.JAEGER_PORT, udp_split_oversized_batches=True
-            )
+        exporter = OTLPSpanExporter(endpoint=settings.OTLP_HOST)
         trace.get_tracer_provider().add_span_processor(LazyBatchSpanProcessor(exporter))
         Instrumentor().instrument()
         trace_format = (

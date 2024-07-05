@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.3.5",
+    version="0.3.6",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -41,7 +41,6 @@ setup(
         "protobuf>=3.19.5,<6",
         "opentelemetry-api==1.24.0",
         "opentelemetry-sdk==1.24.0",
-        "opentelemetry-exporter-jaeger==1.21.0",
         "opentelemetry-exporter-otlp==1.24.0",
         "opentelemetry-instrumentation==0.45b0",
         "opentelemetry-instrumentation-asgi==0.45b0",
