@@ -1,4 +1,4 @@
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
@@ -50,7 +50,7 @@ class UserSignViewSet(MainViewSet):
         # auth
         user = await OAuthBackend().authenticate(request, code=request_data["code"])
         if user:
-            await sync_to_async(auth.login)(request, user)
+            await database_sync_to_async(auth.login)(request, user)
             return Response()
 
         raise VerifyFailed()
@@ -61,5 +61,5 @@ class UserSignViewSet(MainViewSet):
         Sign Out
         """
 
-        auth.logout(request)
+        await database_sync_to_async(auth.logout)(request)
         return Response()
