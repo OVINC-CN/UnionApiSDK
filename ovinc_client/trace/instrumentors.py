@@ -129,11 +129,11 @@ def httpx_request_hook(span: Span, request: RequestInfo):
     HTTPX Request Hook
     """
 
-    span.update_name(f"{request.method.decode()} {request.url}")
+    span.update_name(f"{request.method.decode()} {str(request.url)}")
     span.set_attributes(
         attributes={
-            SpanAttributes.HTTP_URL: request.url,
-            SpanAttributes.HTTP_METHOD: request.method,
+            SpanAttributes.HTTP_URL: str(request.url),
+            SpanAttributes.HTTP_METHOD: request.method.decode(),
         }
     )
 
