@@ -2,6 +2,7 @@ from typing import Union
 
 from django.http import Http404, JsonResponse
 from django.utils.translation import gettext, gettext_lazy
+from opentelemetry.trace import StatusCode
 from rest_framework import exceptions, status
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.serializers import Serializer
@@ -66,6 +67,7 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
             span.set_attribute(SpanAttributes.ERROR_KIND, SPAN_ERROR_TYPE)
             span.set_attribute(SpanAttributes.ERROR_OBJECT, exc.__class__.__name__)
             span.set_attribute(SpanAttributes.ERROR_MESSAGE, msg)
+            span.set_status(StatusCode.ERROR)
 
         return JsonResponse(
             {
