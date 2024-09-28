@@ -1,15 +1,9 @@
 import traceback
 from typing import Collection, Union
 
-import MySQLdb
-from django.conf import settings
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpRequest, HttpResponse
 from opentelemetry.instrumentation.celery import CeleryInstrumentor
-from opentelemetry.instrumentation.dbapi import (
-    DatabaseApiIntegration,
-    trace_integration,
-)
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.httpx import (
     HTTPXClientInstrumentor,
@@ -18,6 +12,7 @@ from opentelemetry.instrumentation.httpx import (
 )
 from opentelemetry.instrumentation.instrumentor import BaseInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
+from opentelemetry.instrumentation.pymysql import PyMySQLInstrumentor
 from opentelemetry.instrumentation.redis import RedisInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.trace import Span, StatusCode, format_trace_id
@@ -26,7 +21,7 @@ from requests import PreparedRequest, Response
 from rest_framework import status
 
 from ovinc_client.core.logger import logger
-from ovinc_client.trace.constants import SPAN_DB_TYPE, SPAN_REDIS_TYPE, SpanAttributes
+from ovinc_client.trace.constants import SPAN_REDIS_TYPE, SpanAttributes
 
 
 def requests_hook(span: Span, request: PreparedRequest):
@@ -72,31 +67,6 @@ def django_response_hook(span: Span, request: HttpRequest, response: HttpRespons
     """
 
     response_hook(span, request, response)
-
-
-class DBApiIntegration(DatabaseApiIntegration):
-    """
-    DB Integration
-    """
-
-    def get_connection_attributes(self, connection):
-        """
-        Get Connection Params
-        """
-
-        try:
-            host_info = str(connection.get_host_info())
-            for conn in settings.DATABASES.values():
-                if host_info.find(conn["HOST"]) != -1:
-                    self.span_attributes[SpanAttributes.DB_INSTANCE] = conn["NAME"]
-                    self.span_attributes[SpanAttributes.DB_NAME] = conn["NAME"]
-                    self.span_attributes[SpanAttributes.DB_USER] = conn["USER"]
-                    self.span_attributes[SpanAttributes.DB_TYPE] = SPAN_DB_TYPE
-                    self.span_attributes[SpanAttributes.DB_PORT] = conn["PORT"]
-                    self.span_attributes[SpanAttributes.DB_IP] = conn["HOST"]
-                    break
-        except Exception:  # pylint: disable=W0718
-            logger.error(traceback.format_exc())
 
 
 def redis_request_hook(span: Span, instance: Redis, args, kwargs):
@@ -183,7 +153,7 @@ class Instrumentor(BaseInstrumentor):
             async_request_hook=httpx_async_request_hook,
             async_response_hook=httpx_async_response_hook,
         )
-        trace_integration(MySQLdb, "connect", "mysql", db_api_integration_factory=DBApiIntegration)
+        PyMySQLInstrumentor().instrument()
 
     def _uninstrument(self, **kwargs):
         if getattr(self, "instrumentors", None) is None:

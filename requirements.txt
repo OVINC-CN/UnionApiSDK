@@ -31,6 +31,7 @@ opentelemetry-instrumentation==0.45b0
 opentelemetry-instrumentation-asgi==0.45b0
 opentelemetry-instrumentation-django==0.45b0
 opentelemetry-instrumentation-dbapi==0.45b0
+opentelemetry-instrumentation-pymysql==0.45b0
 opentelemetry-instrumentation-redis==0.45b0
 opentelemetry-instrumentation-requests==0.45b0
 opentelemetry-instrumentation-celery==0.45b0
