@@ -59,7 +59,7 @@ class ForeignKey(_ForeignKey):
     ForeignKey
     """
 
-    # pylint: disable=R0913
+    # pylint: disable=R0913,R0917
     def __init__(
         self,
         verbose_name: str,
@@ -86,7 +86,7 @@ class ManyToManyField(_ManyToManyField):
     ManyToManyField
     """
 
-    # pylint: disable=R0913
+    # pylint: disable=R0913,R0917
     def __init__(
         self,
         verbose_name: str,
