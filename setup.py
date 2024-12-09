@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.3.11",
+    version="0.3.12b0",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -26,6 +26,7 @@ setup(
         "django_environ>=0.10.0,<1",
         "djangorestframework>=3.14.0,<4",
         "pymysql>=1,<2",
+        "django-db-connection-pool[mysql]==1.2.5",
         "django-cors-headers>=3.11.0,<4",
         "pytz>=2022.4,<2025",
         "django-sslserver>=0.22,<1",
@@ -47,6 +48,7 @@ setup(
         "opentelemetry-instrumentation-django==0.45b0",
         "opentelemetry-instrumentation-dbapi==0.45b0",
         "opentelemetry-instrumentation-pymysql==0.45b0",
+        "opentelemetry-instrumentation-sqlalchemy==0.45b0",
         "opentelemetry-instrumentation-redis==0.45b0",
         "opentelemetry-instrumentation-requests==0.45b0",
         "opentelemetry-instrumentation-celery==0.45b0",

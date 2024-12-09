@@ -15,6 +15,7 @@ from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from opentelemetry.instrumentation.pymysql import PyMySQLInstrumentor
 from opentelemetry.instrumentation.redis import RedisInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.trace import Span, StatusCode, format_trace_id
 from redis import Redis
 from requests import PreparedRequest, Response
@@ -154,6 +155,7 @@ class Instrumentor(BaseInstrumentor):
             async_response_hook=httpx_async_response_hook,
         )
         PyMySQLInstrumentor().instrument()
+        SQLAlchemyInstrumentor().instrument()
 
     def _uninstrument(self, **kwargs):
         if getattr(self, "instrumentors", None) is None:
