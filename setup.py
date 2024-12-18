@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.3.14",
+    version="0.3.15",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -57,6 +57,7 @@ setup(
         "ipython>=8.10.0,<9",
         "tencentcloud-sdk-python>=3.0.785,<4",
         "pycryptodome>=3.20.0,<4",
+        "pydantic>=2,<3",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -1,13 +1,17 @@
 import enum
 
+from pydantic import BaseModel as BaseDataModel
+from pydantic import Field
+
 # Client
 OVINC_CLIENT_SIGNATURE = "OVINC Client"
 OVINC_CLIENT_TIMEOUT = 60
 
 # App Auth
-APP_AUTH_HEADER_KEY = "ovinc-app"
-APP_AUTH_ID_KEY = "app_code"
-APP_AUTH_SECRET_KEY = "app_secret"
+APP_AUTH_HEADER_APPID_KEY = "ovinc-appid"
+APP_AUTH_HEADER_APPID_SIGN = "ovinc-sign"
+APP_AUTH_HEADER_APPID_TIMESTAMP = "ovinc-timestamp"
+APP_AUTH_HEADER_APPID_NONCE = "ovinc-nonce"
 
 
 # Request
@@ -16,11 +20,6 @@ class RequestMethodEnum(enum.Enum):
     POST = "POST"
 
 
-class ResponseData:
-    def __init__(self, result: bool, data: any = None):
-        self._result = result
-        self._data = data
-
-    @property
-    def data(self) -> dict:
-        return self._data if self._result else {}
+class ResponseData(BaseDataModel):
+    result: bool
+    data: dict = Field(default=dict)
