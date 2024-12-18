@@ -48,3 +48,6 @@ tencentcloud-sdk-python>=3.0.785,<4
 
 # crypto
 pycryptodome>=3.20.0,<4
+
+# model
+pydantic>=2,<3

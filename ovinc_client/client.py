@@ -1,5 +1,7 @@
-import json
+import hashlib
 import os
+import time
+import uuid
 from json import JSONDecodeError
 
 import httpx
@@ -8,9 +10,10 @@ from httpx import HTTPStatusError, Response
 from ovinc_client.components.auth import Auth
 from ovinc_client.components.notice import Notice
 from ovinc_client.constants import (
-    APP_AUTH_HEADER_KEY,
-    APP_AUTH_ID_KEY,
-    APP_AUTH_SECRET_KEY,
+    APP_AUTH_HEADER_APPID_KEY,
+    APP_AUTH_HEADER_APPID_NONCE,
+    APP_AUTH_HEADER_APPID_SIGN,
+    APP_AUTH_HEADER_APPID_TIMESTAMP,
     OVINC_CLIENT_SIGNATURE,
     OVINC_CLIENT_TIMEOUT,
     RequestMethodEnum,
@@ -58,14 +61,16 @@ class OVINCClient:
         build request header
         """
 
+        timestamp = str(int(time.time()))
+        nonce = uuid.uuid1().hex
+        raw_content = f"{timestamp}-{nonce}-{self._app_secret}"
+        signature = hashlib.sha256(raw_content.encode()).hexdigest()
         return {
             "User-Agent": OVINC_CLIENT_SIGNATURE,
-            APP_AUTH_HEADER_KEY: json.dumps(
-                {
-                    APP_AUTH_ID_KEY: self._app_code,
-                    APP_AUTH_SECRET_KEY: self._app_secret,
-                }
-            ),
+            APP_AUTH_HEADER_APPID_KEY: self._app_code,
+            APP_AUTH_HEADER_APPID_TIMESTAMP: timestamp,
+            APP_AUTH_HEADER_APPID_NONCE: nonce,
+            APP_AUTH_HEADER_APPID_SIGN: signature,
         }
 
     @classmethod
