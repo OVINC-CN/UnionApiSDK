@@ -59,7 +59,7 @@ class OAuthBackend(BaseBackend):
 
     def authenticate(self, request, ticket: str = None, **kwargs) -> USER_MODEL | None:
         # load ticket
-        ticket = request.COOKIES.get("dev-union-api-sessionid")
+        ticket = request.COOKIES.get(getattr(settings, "OVINC_TICKET_COOKIE_NAME", "ovinc-api-sessionid"))
         if not ticket:
             return None
         # Union API Auth
