@@ -3,7 +3,6 @@ from typing import Tuple, Union
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from django.conf import settings
-from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
 from pydantic import BaseModel as PydanticBaseModel
@@ -30,7 +29,7 @@ class SessionAuthenticate(SessionAuthentication):
     """
 
     async def authenticate(self, request) -> Union[Tuple[USER_MODEL, None], None]:
-        user = await database_sync_to_async(auth.authenticate)(request=request)
+        user = getattr(request._request, "user", None)  # pylint: disable=W0212
         if await self.check_user(user):
             return None
         return user, None
@@ -57,7 +56,7 @@ class OAuthBackend(BaseBackend):
     OAuth
     """
 
-    def authenticate(self, request, ticket: str = None, **kwargs) -> USER_MODEL | None:
+    def authenticate(self, request, **kwargs) -> USER_MODEL | None:
         # load ticket
         ticket = request.COOKIES.get(getattr(settings, "OVINC_TICKET_COOKIE_NAME", "ovinc-api-sessionid"))
         if not ticket:
@@ -87,3 +86,6 @@ class OAuthBackend(BaseBackend):
         except Exception as err:  # pylint: disable=W0718
             logger.exception(err)
             return None
+
+    def get_user(self, user_id: str) -> USER_MODEL:
+        return USER_MODEL.objects.get_or_create(username=user_id)[0]

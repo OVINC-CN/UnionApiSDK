@@ -2,6 +2,8 @@ import traceback
 from functools import wraps
 
 from django.conf import settings
+from django.contrib import auth
+from django.core.handlers.asgi import ASGIRequest
 from django.db import connection
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
@@ -66,3 +68,16 @@ class UnHandleExceptionMiddleware(MiddlewareMixin):
         msg = traceback.format_exc()
         logger.error("[unhandled exception] %s\n%s", str(exception), msg)
         return exception_handler(ServerError(), {})
+
+
+class OAuthMiddleware(MiddlewareMixin):
+    """
+    OAuth
+    """
+
+    def process_request(self, request: ASGIRequest) -> None:
+        user = auth.authenticate(request)
+        if user is None and request.user.is_authenticated:
+            auth.logout(request)
+        elif user is not None and user.username != request.user.username:
+            auth.login(request, user)
