@@ -2,7 +2,6 @@ import datetime
 import json
 import logging
 import os
-from typing import Union
 
 from django.conf import settings
 from django.utils.encoding import force_str
@@ -105,14 +104,17 @@ class DumpLog:
         new_args = []
         for _arg in self._args:
             try:
-                if isinstance(_arg, bytes):
-                    new_args.append(_arg.decode())
-                elif isinstance(_arg, Union[str, int]):
-                    new_args.append(_arg)
-                elif isinstance(_arg, Union[datetime.datetime, datetime.date]):
-                    new_args.append(str(_arg))
-                else:
-                    new_args.append(json.dumps(_arg, ensure_ascii=False))
+                match _arg:
+                    case bytes():
+                        new_args.append(_arg.decode())
+                    case str() | int():
+                        new_args.append(_arg)
+                    case datetime.datetime() | datetime.date():
+                        new_args.append(str(_arg))
+                    case Exception():
+                        new_args.append(f"{_arg} => {_arg.__dict__}")
+                    case _:
+                        new_args.append(json.dumps(_arg, ensure_ascii=False))
             except Exception:  # pylint: disable=W0718
                 new_args.append(force_str(_arg))
         return tuple(new_args)
