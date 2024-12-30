@@ -75,7 +75,9 @@ class OAuthBackend(BaseBackend):
             user_info = UserInfo.model_validate(resp.data.get("data", {}))
             user: USER_MODEL = USER_MODEL.objects.get_or_create(username=user_info.username)[0]
             if (
-                user_info.nick_name.lower() != user.nick_name.lower()
+                not user.nick_name
+                or not user.user_type
+                or user_info.nick_name.lower() != user.nick_name.lower()
                 or user_info.user_type.lower() != user.user_type.lower()
             ):
                 user.nick_name = user_info.username
