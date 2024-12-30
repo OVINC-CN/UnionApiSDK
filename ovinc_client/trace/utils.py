@@ -90,10 +90,10 @@ def get_tracer() -> Tracer:
     return trace.get_tracer(settings.APP_CODE)
 
 
-def start_as_current_span(span_name: str) -> Span:
+def start_as_current_span(span_name: str, **kwargs) -> Span:
     """
     Start a Span
     """
 
     tracer = get_tracer()
-    return tracer.start_as_current_span(span_name)
+    return tracer.start_as_current_span(span_name, **kwargs)

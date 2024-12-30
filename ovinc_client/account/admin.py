@@ -3,7 +3,7 @@ from django.contrib.admin import SimpleListFilter
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
 
-from ovinc_client.account.models import User, UserToken
+from ovinc_client.account.models import User
 from ovinc_client.core.utils import strtobool
 
 
@@ -31,15 +31,3 @@ class ExpiredFilter(SimpleListFilter):
                 return queryset.filter(expired_at__lt=timezone.now())
             return queryset.filter(expired_at__gte=timezone.now())
         return queryset
-
-
-@admin.register(UserToken)
-class UserTokenAdmin(admin.ModelAdmin):
-    list_display = ["id", "user", "session_key", "login_ip", "user_agent", "expired_at", "is_expired"]
-    list_filter = ["user__username", ExpiredFilter]
-    search_fields = ["session_key", "login_ip"]
-    ordering = ["-id"]
-
-    @admin.display(description=gettext_lazy("Is Expired"), boolean=True)
-    def is_expired(self, token: UserToken) -> bool:
-        return token.expired_at < timezone.now()

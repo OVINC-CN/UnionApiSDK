@@ -8,13 +8,13 @@ class Auth(Component):
     """
 
     def __init__(self, client, base_url: str):
-        self.verify_code = VerifyCodeEndpoint(client, base_url)
+        self.verify_ticket = VerifyTicketEndpoint(client, base_url)
 
 
-class VerifyCodeEndpoint(Endpoint):
+class VerifyTicketEndpoint(Endpoint):
     """
-    Send Mail
+    VerifyTicket
     """
 
     method = RequestMethodEnum.POST.value
-    path = "/account/verify_code/"
+    path = "/account/verify_ticket/"
