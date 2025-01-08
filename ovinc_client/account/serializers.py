@@ -1,7 +1,7 @@
-from adrf.serializers import ModelSerializer, Serializer
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer, Serializer
 
 from ovinc_client.account.models import User
 
