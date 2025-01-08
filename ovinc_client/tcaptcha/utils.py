@@ -26,7 +26,7 @@ class TCaptchaVerify:
         self.user_ip = user_ip
         self.kwargs = kwargs
 
-    async def verify(self) -> bool:
+    def verify(self) -> bool:
         # not enabled
         if not settings.CAPTCHA_ENABLED:
             return True

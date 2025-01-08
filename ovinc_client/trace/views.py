@@ -10,7 +10,7 @@ class RUMViewSet(MainViewSet):
     authentication_classes = [SessionAuthenticate]
 
     @action(methods=["GET"], detail=False)
-    async def config(self, request, *args, **kwargs):
+    def config(self, request, *args, **kwargs):
         return Response(
             {
                 "id": settings.RUM_ID,

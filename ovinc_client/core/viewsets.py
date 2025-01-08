@@ -16,29 +16,29 @@ class MainViewSet(CacheMixin, ViewSet, GenericViewSet):
 
 class CreateMixin(abc.ABC):
     @abc.abstractmethod
-    async def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         raise NotImplementedError()
 
 
 class ListMixin(abc.ABC):
     @abc.abstractmethod
-    async def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         raise NotImplementedError()
 
 
 class RetrieveMixin(abc.ABC):
     @abc.abstractmethod
-    async def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         raise NotImplementedError()
 
 
 class UpdateMixin(abc.ABC):
     @abc.abstractmethod
-    async def update(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         raise NotImplementedError()
 
 
 class DestroyMixin(abc.ABC):
     @abc.abstractmethod
-    async def destroy(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         raise NotImplementedError()

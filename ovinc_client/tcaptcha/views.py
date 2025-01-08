@@ -19,7 +19,7 @@ class CaptchaViewSet(MainViewSet):
     """
 
     @action(methods=["GET"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def config(self, request: Request, *args, **kwargs) -> Response:
+    def config(self, request: Request, *args, **kwargs) -> Response:
         """
         Captcha Config
         """

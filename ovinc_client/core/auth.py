@@ -1,6 +1,5 @@
 from typing import Tuple, Union
 
-from channels.db import database_sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
@@ -19,13 +18,12 @@ class SessionAuthenticate(SessionAuthentication):
     Session Auth
     """
 
-    async def authenticate(self, request) -> Union[Tuple[USER_MODEL, None], None]:
+    def authenticate(self, request) -> Union[Tuple[USER_MODEL, None], None]:
         user = getattr(request._request, "user", None)  # pylint: disable=W0212
-        if await self.check_user(user):
+        if self.check_user(user):
             return None
         return user, None
 
-    @database_sync_to_async
     def check_user(self, user):
         return user is None or not user.is_active
 
@@ -35,9 +33,9 @@ class LoginRequiredAuthenticate(SessionAuthenticate):
     Login Required Authenticate
     """
 
-    async def authenticate(self, request) -> (USER_MODEL, None):
-        user_tuple = await super().authenticate(request)
-        if user_tuple is None or await self.check_user(user_tuple[0]):
+    def authenticate(self, request) -> Tuple[USER_MODEL, None]:
+        user_tuple = super().authenticate(request)
+        if user_tuple is None or self.check_user(user_tuple[0]):
             raise LoginRequired()
         return user_tuple
 
@@ -48,7 +46,7 @@ class OAuthBackend(BaseBackend):
     """
 
     # pylint: disable=R1710
-    async def authenticate(self, request, code: str = None, **kwargs):
+    def authenticate(self, request, code: str = None, **kwargs) -> Union[USER_MODEL, None]:
         if not code:
             return
         # Union API Auth
@@ -57,21 +55,17 @@ class OAuthBackend(BaseBackend):
             client = OVINCClient(
                 app_code=settings.APP_CODE, app_secret=settings.APP_SECRET, union_api_url=settings.OVINC_API_DOMAIN
             )
-            resp: ResponseData = await client.auth.verify_code({"code": code})
+            resp: ResponseData = client.auth.verify_code({"code": code})
             data: dict = resp.data.get("data", {})
             if data and data.get("username"):
                 username = data.pop("username")
-                user = await self.get_user(user_id=username)
+                user = USER_MODEL.objects.get_or_create(username=username)[0]
                 for key, val in data.items():
                     setattr(user, key, val)
-                await user.asave(update_fields=data.keys())
+                user.save(update_fields=data.keys())
                 return user
             logger.info("[UnionAuthFailed] Result => %s", resp.data)
             return None
         except Exception as err:  # pylint: disable=W0718
             logger.exception(err)
             return None
-
-    @database_sync_to_async
-    def get_user(self, user_id: str) -> USER_MODEL:
-        return USER_MODEL.objects.get_or_create(username=user_id)[0]
