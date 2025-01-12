@@ -13,6 +13,7 @@ def get_logging_config_dict(*, log_level: str, log_format: str = "json") -> dict
 
     return {
         "version": 1,
+        "disable_existing_loggers": False,
         "formatters": {
             "verbose": (
                 {
