@@ -1,92 +1,49 @@
 import datetime
 import json
 import logging
-import os
+import sys
 
-from django.conf import settings
 from django.utils.encoding import force_str
 
 
-def get_logging_config_dict(log_level: str, log_dir: str) -> dict:
+def get_logging_config_dict(*, log_level: str, log_format: str = "json") -> dict:
     """
     Get Logging Config
     """
 
-    log_class = "logging.handlers.RotatingFileHandler"
-    if settings.DEBUG:
-        logging_format = {
-            "format": ("%(levelname)s [%(asctime)s] %(pathname)s " "%(lineno)d %(funcName)s " "\n \t %(message)s \n"),
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        }
-    else:
-        logging_format = {
-            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "fmt": (
-                "%(levelname)s %(asctime)s %(pathname)s %(lineno)d " "%(funcName)s %(process)d %(thread)d %(message)s"
-            ),
-        }
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
     return {
         "version": 1,
-        "disable_existing_loggers": False,
         "formatters": {
-            "verbose": logging_format,
-            "simple": {"format": "%(levelname)s %(message)s"},
+            "verbose": (
+                {
+                    "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+                    "fmt": (
+                        "%(levelname)s %(asctime)s %(pathname)s %(lineno)d "
+                        "%(funcName)s %(process)d %(thread)d %(message)s"
+                    ),
+                }
+                if log_format == "json"
+                else {
+                    "format": (
+                        "%(levelname)s [%(asctime)s] %(pathname)s " "%(lineno)d %(funcName)s " "\n \t %(message)s \n"
+                    ),
+                    "datefmt": "%Y-%m-%d %H:%M:%S",
+                }
+            ),
         },
         "handlers": {
-            "null": {"level": "DEBUG", "class": "logging.NullHandler"},
-            "console": {
-                "level": "DEBUG",
+            "stream": {
+                "level": log_level,
                 "class": "logging.StreamHandler",
-                "formatter": "simple",
-            },
-            "app": {
-                "class": log_class,
                 "formatter": "verbose",
-                "filename": os.path.join(log_dir, "django.log"),
-                "maxBytes": 1024 * 1024 * 10,
-                "backupCount": 5,
-                "encoding": "utf8",
-            },
-            "mysql": {
-                "class": log_class,
-                "formatter": "verbose",
-                "filename": os.path.join(log_dir, "mysql.log"),
-                "maxBytes": 1024 * 1024 * 10,
-                "backupCount": 5,
-                "encoding": "utf8",
-            },
-            "cel": {
-                "class": log_class,
-                "formatter": "verbose",
-                "filename": os.path.join(log_dir, "celery.log"),
-                "maxBytes": 1024 * 1024 * 10,
-                "backupCount": 5,
-                "encoding": "utf8",
+                "stream": sys.stdout,
             },
         },
         "loggers": {
-            "django": {"handlers": ["null"], "level": "INFO", "propagate": True},
-            "django.server": {
-                "handlers": ["console"],
-                "level": log_level,
-                "propagate": True,
-            },
-            "django.request": {
-                "handlers": ["app"],
-                "level": "ERROR",
-                "propagate": True,
-            },
-            "django.db.backends": {
-                "handlers": ["mysql"],
-                "level": log_level,
-                "propagate": True,
-            },
-            "root": {"handlers": ["console"], "level": log_level, "propagate": True},
-            "app": {"handlers": ["app"], "level": log_level, "propagate": True},
-            "mysql": {"handlers": ["mysql"], "level": log_level, "propagate": True},
-            "cel": {"handlers": ["cel"], "level": log_level, "propagate": True},
+            "root": {"handlers": ["stream"], "level": log_level, "propagate": False},
+            "app": {"handlers": ["stream"], "level": log_level, "propagate": False},
+            "mysql": {"handlers": ["stream"], "level": log_level, "propagate": False},
+            "cel": {"handlers": ["stream"], "level": log_level, "propagate": False},
         },
     }
 
