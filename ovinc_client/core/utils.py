@@ -17,7 +17,7 @@ def uniq_id(with_time=True) -> str:
     _md5 = md5()
     _md5.update(str(int(time.time() * 1000)).encode())
     time_str = str(_md5.hexdigest())
-    uniq = str(uuid.uuid3(uuid.uuid1(), uuid.uuid4().hex).hex)
+    uniq = str(uuid.uuid5(uuid.uuid1(), uuid.uuid4().hex).hex)
     return f"{time_str if with_time else ''}{uniq}"
 
 
