@@ -1,26 +1,19 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open("README.md", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name="ovinc_client",
-    version="0.4.0",
+    version="0.4.1",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
     description="A Tool for OVINC Union API",
-    packages=[
-        "ovinc_client",
-        "ovinc_client.account",
-        "ovinc_client.account.migrations",
-        "ovinc_client.components",
-        "ovinc_client.core",
-        "ovinc_client.tcaptcha",
-        "ovinc_client.trace",
-    ],
+    packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         "django>=4,<5",
         "django_environ>=0.10.0,<1",
