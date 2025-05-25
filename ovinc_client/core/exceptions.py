@@ -7,6 +7,7 @@ from rest_framework import exceptions, status
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.serializers import Serializer
 
+from ovinc_client.core.logger import logger
 from ovinc_client.trace.constants import SPAN_ERROR_TYPE, SpanAttributes
 from ovinc_client.trace.utils import start_as_current_span
 
@@ -26,6 +27,8 @@ def exception_handler(exc, context) -> Union[JsonResponse, None]:
     """
     Handler Exception from Raise
     """
+
+    logger.exception("[ExceptionHandler] %s", exc)
 
     if isinstance(exc, Http404):
         exc = Error404()
