@@ -4,19 +4,19 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 
-[中文文档](README_CN.md)
+[English Docs](README.md)
 
-A Python client for OVINC Union API, providing easy access to authentication, notifications, and TCaptcha verification.
+OVINC Union API 的 Python 客户端，提供对认证、通知和 TCaptcha 验证的便捷访问。
 
-## Installation
+## 安装
 
 ```bash
 pip install ovinc-client
 ```
 
-## Usage
+## 使用方法
 
-### Initialization
+### 初始化
 
 ```python
 from ovinc_client.client import OVINCClient
@@ -28,43 +28,52 @@ OVINC_API_URL = "https://api.ovinc.cn"
 client = OVINCClient(app_code=APP_CODE, app_secret=APP_SECRET, union_api_url=OVINC_API_URL)
 ```
 
-### Notifications (Notice)
+### 通知 (Notice)
 
-#### Send Email
+#### 发送邮件
 
 ```python
 response = client.notice.mail({
-    "to": "user@example.com",
-    "subject": "Hello",
-    "content": "This is a test email."
+    "usernames": ["user1", "user2"],
+    "content": {
+        "title": "Hello",
+        "content": "This is a test email."
+    }
 })
 print(response.data)
 ```
 
-#### Send SMS
+#### 发送短信
 
 ```python
 response = client.notice.sms({
-    "phone": "13800138000",
-    "template_id": "123456",
-    "params": ["1234"]
+    "usernames": ["user1", "user2"],
+    "content": {
+        "tid": "123456",
+        "params": ["1234"]
+    }
 })
 print(response.data)
 ```
 
-#### Send Robot Message
+#### 发送机器人消息
 
 ```python
 response = client.notice.robot({
-    "channel": "wecom",
-    "content": "Hello from robot"
+    "robots": ["robot_id_1"],
+    "content": {
+        "msgtype": "text",
+        "text": {
+            "content": "Hello from robot"
+        }
+    }
 })
 print(response.data)
 ```
 
-### Authentication (Auth)
+### 认证 (Auth)
 
-#### Verify Code
+#### 验证码校验
 
 ```python
 response = client.auth.verify_code({
@@ -74,11 +83,11 @@ response = client.auth.verify_code({
 print(response.data)
 ```
 
-### TCaptcha Verification
+### TCaptcha 验证
 
-This module requires Django settings configuration.
+此模块需要配置 Django settings。
 
-**Settings:**
+**配置:**
 
 ```python
 # settings.py
@@ -89,12 +98,12 @@ CAPTCHA_APP_SECRET = "your_captcha_app_secret"
 CAPTCHA_ENABLED = True
 ```
 
-**Usage:**
+**使用:**
 
 ```python
 from ovinc_client.tcaptcha.utils import TCaptchaVerify
 
-# In your view or API
+# 在视图或 API 中
 def verify_captcha(request):
     user_ip = request.META.get("REMOTE_ADDR")
     ticket = request.data.get("ticket")
@@ -114,6 +123,6 @@ def verify_captcha(request):
         return "Failed"
 ```
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。
