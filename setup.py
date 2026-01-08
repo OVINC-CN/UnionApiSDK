@@ -30,7 +30,7 @@ setup(
         "python_json_logger>=2.0.3,<3",
         "httpx[http2]>=0.23.2,<1",
         "requests>=2.32.0,<3",
-        "urllib3>=2.6.0,<3",
+        "urllib3>=2.6.3,<3",
         "protobuf>=3.19.5,<6",
         "opentelemetry-api==1.29.0",
         "opentelemetry-sdk==1.29.0",
