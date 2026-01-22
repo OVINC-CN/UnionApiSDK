@@ -6,7 +6,7 @@ from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.sampling import ALWAYS_ON
 
-from ovinc_client.trace.exporters import LazyBatchSpanProcessor
+from ovinc_client.trace.exporters import LazyBatchSpanProcessor, NoOpSpanExporter
 from ovinc_client.trace.instrumentors import Instrumentor
 from ovinc_client.trace.utils import ServiceNameHandler, inject_logging_trace_info
 
@@ -26,7 +26,10 @@ class TraceHandler:
             )
         )
         # otlp
-        exporter = OTLPSpanExporter(endpoint=settings.OTLP_HOST)
+        if getattr(settings, "ENABLE_OTLP_EXPORTER", True):
+            exporter = OTLPSpanExporter(endpoint=settings.OTLP_HOST)
+        else:
+            exporter = NoOpSpanExporter()
         trace.get_tracer_provider().add_span_processor(LazyBatchSpanProcessor(exporter))
         Instrumentor().instrument()
         trace_format = (
