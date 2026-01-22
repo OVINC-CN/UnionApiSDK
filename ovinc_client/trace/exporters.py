@@ -2,7 +2,11 @@ import threading
 from typing import Sequence
 
 from opentelemetry.sdk.trace import ReadableSpan
-from opentelemetry.sdk.trace.export import BatchSpanProcessor, SpanExporter, SpanExportResult
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    SpanExporter,
+    SpanExportResult,
+)
 
 
 class LazyBatchSpanProcessor(BatchSpanProcessor):
