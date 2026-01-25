@@ -15,7 +15,7 @@ class LazyBatchSpanProcessor(BatchSpanProcessor):
     Nothing need to change because everything works well on this sdk version
     """
 
-    pass
+    ...
 
 
 class NoOpSpanExporter(SpanExporter):
