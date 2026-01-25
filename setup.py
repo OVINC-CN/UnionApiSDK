@@ -31,7 +31,7 @@ setup(
         "httpx[http2]>=0.23.2,<1",
         "requests>=2.32.0,<3",
         "urllib3>=2.6.3,<3",
-        "protobuf>=6.33.4,<7",
+        "protobuf==6.31.1",
         "opentelemetry-api==1.39.1",
         "opentelemetry-sdk==1.39.1",
         "opentelemetry-exporter-otlp==1.39.1",
