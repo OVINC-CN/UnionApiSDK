@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.4.8",
+    version="0.4.9",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -23,6 +23,7 @@ setup(
         "pytz>=2022.4,<2026",
         "django-sslserver>=0.22,<1",
         "pyOpenSSL>=22.1.0,<26",
+        "cryptography>=46.0.5,<47"
         "django-simpleui>=2023.8.28,<2026",
         "channels>=4,<5",
         "redis>=5.0.0,<6",
