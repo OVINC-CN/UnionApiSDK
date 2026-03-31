@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as fh:
 
 setup(
     name="ovinc_client",
-    version="0.4.11",
+    version="0.4.12",
     author="OVINC",
     url="https://www.ovinc.cn/",
     author_email="contact@ovinc.cn",
@@ -23,7 +23,7 @@ setup(
         "pytz>=2022.4,<2026",
         "django-sslserver>=0.22,<1",
         "pyOpenSSL>=26.0.0,<27",
-        "cryptography>=46.0.5,<47",
+        "cryptography>=46.0.6,<47",
         "django-simpleui>=2023.8.28,<2026",
         "channels>=4,<5",
         "PyJWT>=2.12.0,<3",
@@ -31,7 +31,7 @@ setup(
         "django-redis>=5.0.0,<6",
         "python_json_logger>=2.0.3,<3",
         "httpx[http2]>=0.23.2,<1",
-        "requests>=2.32.0,<3",
+        "requests>=2.33.0,<3",
         "urllib3>=2.6.3,<3",
         "protobuf==6.33.5",
         "opentelemetry-api==1.39.1",
@@ -51,6 +51,7 @@ setup(
         "tencentcloud-sdk-python>=3.0.785,<4",
         "pycryptodome>=3.20.0,<4",
         "pydantic>=2,<3",
+        "Pygments>=2.20.0"
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
